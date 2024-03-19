@@ -69,3 +69,7 @@ $RECYCLE.BIN/
 *.ilk
 *.idb
 *.VC
+
+Browse.VC.db-wal
+Browse.VC.db-shm
+Browse.VC.opendb
