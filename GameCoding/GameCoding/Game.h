@@ -29,6 +29,8 @@ private:
 	// Shader Resource View
 	void CreateSRV();
 
+	void CreateConstantBuffer();
+
 	void LoadShaderFromFile(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob);
 
 private:
@@ -70,5 +72,12 @@ private:
 	ComPtr<ID3D11ShaderResourceView> _shaderResourceView2 = nullptr;
 
 	// [ CPU <-> RAM ] [ GPU <-> VRAM ]
+
+private:
+	// SRT
+	TransformData _transformData;
+	ComPtr<ID3D11Buffer> _constantBuffer;
+
+	uint64 _time = 0;
 };
 
