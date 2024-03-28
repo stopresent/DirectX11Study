@@ -5,6 +5,7 @@
 #include "Struct.h"
 
 #include <string>
+#include <memory>
 
 // STL
 #include <vector>
@@ -37,3 +38,6 @@ using namespace Microsoft::WRL;
 #endif
 
 #define CHECK(p)	assert(SUCCEEDED(p))
+
+// Engine
+#include "Graphics.h"
