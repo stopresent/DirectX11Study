@@ -37,18 +37,16 @@ void Game::Init(HWND hwnd)
 
 void Game::Update()
 {
-	//_time++;
+	// Scal Rotation Transform
 
-	//if (_time % 500 < 250)
-	//	_transformData.offset.x += 0.003f;
-	//else
-	//	_transformData.offset.x -= 0.003f;
+	Matrix matScale = Matrix::CreateScale(_localScale / 3);
+	Matrix matRotation = Matrix::CreateRotationX(_localRotation.x);
+	matRotation = Matrix::CreateRotationY(_localRotation.y);
+	matRotation = Matrix::CreateRotationZ(_localRotation.z);
+	Matrix matTranslation = Matrix::CreateTranslation(_localPosition);
 
-	//if (_time % 500 < 250)
-	//	_transformData.offset.y += 0.003f;
-	//else
-	//	_transformData.offset.y -= 0.003f;
-
+	Matrix matWorld = matScale * matRotation * matTranslation; // SRT
+	_transformData.matWorld = matWorld;
 
 	D3D11_MAPPED_SUBRESOURCE subResource;
 	ZeroMemory(&subResource, sizeof(subResource));
@@ -87,7 +85,7 @@ void Game::Render()
 
 		// OM
 		_deviceContext->OMSetBlendState(_blendState.Get(), nullptr, 0xFFFFFFFF);
-		 
+
 		//_deviceContext->Draw(_vertices.size(), 0);
 		_deviceContext->DrawIndexed(_indices.size(), 0, 0);
 

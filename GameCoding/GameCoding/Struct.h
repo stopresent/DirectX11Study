@@ -10,6 +10,10 @@ struct Vertex
 
 struct TransformData
 {
-	Vec3 offset;
-	float dummy; // 16바이트 정렬을 해야해서 추가함.
+	//Vec3 offset;
+	//float dummy; // 16바이트 정렬을 해야해서 추가함.
+
+	Matrix matWorld = Matrix::Identity;
+	Matrix matView = Matrix::Identity;
+	Matrix matProjection = Matrix::Identity;
 };
