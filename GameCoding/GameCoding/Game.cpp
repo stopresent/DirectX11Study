@@ -16,6 +16,9 @@ void Game::Init(HWND hwnd)
 	_hwnd = hwnd;
 
 	_graphics = make_shared<Graphics>(hwnd);
+	_vertexBuffer = make_shared<VertexBuffer>(_graphics->GetDevice());
+	_indexBuffer = make_shared<IndexBuffer>(_graphics->GetDevice());
+	_inputLayout = make_shared<InputLayout>(_graphics->GetDevice());
 
 	CreateGeometry();
 	CreateVS();
@@ -65,9 +68,9 @@ void Game::Render()
 		auto _deviceContext = _graphics->GetDeviceContext();
 
 		// IA
-		_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetAddressOf(), &stride, &offset);
-		_deviceContext->IASetIndexBuffer(_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		_deviceContext->IASetInputLayout(_inputLayout.Get());
+		_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer->GetComPtr().GetAddressOf(), &stride, &offset);
+		_deviceContext->IASetIndexBuffer(_indexBuffer->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
+		_deviceContext->IASetInputLayout(_inputLayout->GetComPtr().Get());
 		_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		// VS
@@ -118,21 +121,7 @@ void Game::CreateGeometry()
 
 	// VertexBuffer
 	{
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(desc));
-		desc.Usage = D3D11_USAGE_IMMUTABLE;
-		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		desc.ByteWidth = static_cast<uint32>(sizeof(Vertex) * _vertices.size());
-
-		D3D11_SUBRESOURCE_DATA data;
-		ZeroMemory(&data, sizeof(data));
-
-		// cpu쪽 메모리에 있던 데이터의 첫번째 주소를 넣기.
-		//data.pSysMem = &_vertices[0];
-		data.pSysMem = _vertices.data();
-
-		HRESULT hr = _graphics->GetDevice()->CreateBuffer(&desc, &data, _vertexBuffer.GetAddressOf());
-		CHECK(hr);
+		_vertexBuffer->Create(_vertices);
 	}
 
 	// Index
@@ -142,27 +131,13 @@ void Game::CreateGeometry()
 
 	// IndexBuffer
 	{
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(desc));
-		desc.Usage = D3D11_USAGE_IMMUTABLE;
-		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		desc.ByteWidth = static_cast<uint32>(sizeof(uint32) * _indices.size());
-
-		D3D11_SUBRESOURCE_DATA data;
-		ZeroMemory(&data, sizeof(data));
-
-		// cpu쪽 메모리에 있던 데이터의 첫번째 주소를 넣기.
-		//data.pSysMem = &_indices[0];
-		data.pSysMem = _indices.data();
-
-		HRESULT hr = _graphics->GetDevice()->CreateBuffer(&desc, &data, _indexBuffer.GetAddressOf());
-		CHECK(hr);
+		_indexBuffer->Create(_indices);
 	}
 }
 
 void Game::CreateInputLayout()
 {
-	D3D11_INPUT_ELEMENT_DESC layout[] =
+	vector<D3D11_INPUT_ELEMENT_DESC> layout
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		// Ver3가 12바이트를 차지하므로 color는 12부터 시작한다고 알려줘야함.
@@ -170,8 +145,7 @@ void Game::CreateInputLayout()
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-	const int32 count = sizeof(layout) / sizeof(D3D11_INPUT_ELEMENT_DESC);
-	_graphics->GetDevice()->CreateInputLayout(layout, count, _vsBlob->GetBufferPointer(), _vsBlob->GetBufferSize(), _inputLayout.GetAddressOf());
+	_inputLayout->Create(layout, _vsBlob);
 }
 
 void Game::CreateVS()
