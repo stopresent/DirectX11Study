@@ -37,11 +37,13 @@ private:
 
 private:
 	// Geometry
-	vector<Vertex> _vertices;
+	//vector<Vertex> _vertices;
+	//vector<uint32> _indices;
+
+	shared_ptr<Geometry<VertexTextureData>> _geometry;
+
 	//ComPtr<ID3D11Buffer> _vertexBuffer = nullptr;
 	shared_ptr<VertexBuffer> _vertexBuffer;
-
-	vector<uint32> _indices;
 	//ComPtr<ID3D11Buffer> _indexBuffer = nullptr;
 	shared_ptr<IndexBuffer> _indexBuffer;
 	//ComPtr<ID3D11InputLayout> _inputLayout = nullptr;
