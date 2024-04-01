@@ -2,12 +2,12 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\stopresent\source\DirectX11Study\GameCoding\Binaries\GameCoding.exe</FullPath>
+      <FullPath>C:\stopresent\Inflearn\ROOKISS\DirectX11Study\GameCoding\Binaries\GameCoding.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>C:\stopresent\source\DirectX11Study\GameCoding\Binaries\Default.cso</FullPath>
+      <FullPath>C:\stopresent\Inflearn\ROOKISS\DirectX11Study\GameCoding\Binaries\Default.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />
