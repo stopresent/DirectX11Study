@@ -12,12 +12,6 @@ public:
 	void Render();
 
 private:
-
-	void CreateRasterizerState();
-	void CreateSamplerState();
-	void CreateBlendState();
-
-private:
 	HWND _hwnd;
 	
 	shared_ptr<Graphics> _graphics;
@@ -33,7 +27,7 @@ private:
 	shared_ptr<VertexShader> _vertexShader;
 
 	// RAS
-	ComPtr<ID3D11RasterizerState> _rasterizerState = nullptr;
+	shared_ptr<RasterizerState> _rasterizerState;
 
 	// PS
 	shared_ptr<PixelShader> _pixelShader;
@@ -41,8 +35,8 @@ private:
 	// SRV
 	shared_ptr<Texture> _texture1;
 
-	ComPtr<ID3D11SamplerState> _samplerState;
-	ComPtr<ID3D11BlendState> _blendState;
+	shared_ptr<SamplerState> _samplerState;
+	shared_ptr<BlendState> _blendState;
 
 	// [ CPU <-> RAM ] [ GPU <-> VRAM ]
 private:
