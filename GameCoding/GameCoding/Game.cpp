@@ -25,7 +25,6 @@ void Game::Init(HWND hwnd)
 	_constantBuffer = make_shared<ConstantBuffer<TransformData>>(_graphics->GetDevice(), _graphics->GetDeviceContext());
 	_texture1 = make_shared<Texture>(_graphics->GetDevice());
 
-	//CreateGeometry();
 	// VertexData
 	GeometryHelper::CreateRectangle(_geometry);
 
@@ -58,7 +57,6 @@ void Game::Init(HWND hwnd)
 void Game::Update()
 {
 	// Scal Rotation Transform
-
 	_localPosition.x += 0.001f;
 
 	Matrix matScale = Matrix::CreateScale(_localScale / 3);
@@ -70,12 +68,6 @@ void Game::Update()
 	Matrix matWorld = matScale * matRotation * matTranslation; // SRT
 	_transformData.matWorld = matWorld;
 
-	//D3D11_MAPPED_SUBRESOURCE subResource;
-	//ZeroMemory(&subResource, sizeof(subResource));
-
-	//_graphics->GetDeviceContext()->Map(_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource);
-	//::memcpy(subResource.pData, &_transformData, sizeof(_transformData));
-	//_graphics->GetDeviceContext()->Unmap(_constantBuffer.Get(), 0);
 	_constantBuffer->CopyData(_transformData);
 }
 
@@ -106,13 +98,11 @@ void Game::Render()
 		// PS
 		_deviceContext->PSSetShader(_pixelShader->GetComPtr().Get(), nullptr, 0);
 		_deviceContext->PSSetShaderResources(0, 1, _texture1->GetComPtr().GetAddressOf());
-		//_deviceContext->PSSetShaderResources(1, 1, _shaderResourceView2.GetAddressOf());
 		_deviceContext->PSSetSamplers(0, 1, _samplerState.GetAddressOf());
 
 		// OM
 		_deviceContext->OMSetBlendState(_blendState.Get(), nullptr, 0xFFFFFFFF);
 
-		//_deviceContext->Draw(_vertices.size(), 0);
 		_deviceContext->DrawIndexed(_geometry->GetIndexCount(), 0, 0);
 
 	}
