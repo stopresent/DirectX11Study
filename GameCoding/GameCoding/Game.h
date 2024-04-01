@@ -12,20 +12,11 @@ public:
 	void Render();
 
 private:
-	void CreateGeometry();
-	void CreateInputLayout();
-	void CreateVS();
-	void CreatePS();
 
 	void CreateRasterizerState();
 	void CreateSamplerState();
 	void CreateBlendState();
 	// Shader Resource View
-	void CreateSRV();
-
-	void CreateConstantBuffer();
-
-	void LoadShaderFromFile(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob);
 
 private:
 	HWND _hwnd;
@@ -39,7 +30,7 @@ private:
 	// Geometry
 	//vector<Vertex> _vertices;
 	//vector<uint32> _indices;
-
+	
 	shared_ptr<Geometry<VertexTextureData>> _geometry;
 
 	//ComPtr<ID3D11Buffer> _vertexBuffer = nullptr;
@@ -50,19 +41,22 @@ private:
 	shared_ptr<InputLayout> _inputLayout;
 
 	// VS
-	ComPtr<ID3D11VertexShader> _vertexShader = nullptr;
-	ComPtr<ID3DBlob> _vsBlob = nullptr;
+	shared_ptr<VertexShader> _vertexShader;
+	//ComPtr<ID3D11VertexShader> _vertexShader = nullptr;
+	//ComPtr<ID3DBlob> _vsBlob = nullptr;
 
 	// RAS
 	ComPtr<ID3D11RasterizerState> _rasterizerState = nullptr;
 
 	// PS
-	ComPtr<ID3D11PixelShader> _pixelShader = nullptr;
-	ComPtr<ID3DBlob> _psBlob = nullptr;
+	shared_ptr<PixelShader> _pixelShader;
+	//ComPtr<ID3D11PixelShader> _pixelShader = nullptr;
+	//ComPtr<ID3DBlob> _psBlob = nullptr;
 
 	// SRV
-	ComPtr<ID3D11ShaderResourceView> _shaderResourceView = nullptr;
-	ComPtr<ID3D11ShaderResourceView> _shaderResourceView2 = nullptr;
+	//ComPtr<ID3D11ShaderResourceView> _shaderResourceView = nullptr;
+	//ComPtr<ID3D11ShaderResourceView> _shaderResourceView2 = nullptr;
+	shared_ptr<Texture> _texture1;
 
 	ComPtr<ID3D11SamplerState> _samplerState;
 	ComPtr<ID3D11BlendState> _blendState;
@@ -71,7 +65,8 @@ private:
 private:
 	// SRT
 	TransformData _transformData;
-	ComPtr<ID3D11Buffer> _constantBuffer;
+	shared_ptr<ConstantBuffer<TransformData>> _constantBuffer;
+	//ComPtr<ID3D11Buffer> _constantBuffer;
 
 	uint64 _time = 0;
 
