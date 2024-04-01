@@ -27,33 +27,20 @@ void Game::Init(HWND hwnd)
 	_rasterizerState = make_shared<RasterizerState>(_graphics->GetDevice());
 	_samplerState = make_shared<SamplerState>(_graphics->GetDevice());
 	_blendState = make_shared<BlendState>(_graphics->GetDevice());
+	_pipeline = make_shared<Pipeline>(_graphics->GetDeviceContext());
 
-	// VertexData
 	GeometryHelper::CreateRectangle(_geometry);
-
-	// VertexBuffer
 	_vertexBuffer->Create(_geometry->GetVertices());
-
-	// IndexBuffer
 	_indexBuffer->Create(_geometry->GetIndices());
-
-	//CreateVS();
 	_vertexShader->Create(L"Default.hlsl", "VS", "vs_5_0");
-
-	//CreateInputLayout();
 	_inputLayout->Create(VertexTextureData::desc, _vertexShader->GetBlob());
-
-	//CreatePS();
 	_pixelShader->Create(L"Default.hlsl", "PS", "ps_5_0");
 
 	_rasterizerState->Create();
 	_samplerState->Create();
 	_blendState->Create();
 
-	//CreateSRV();
 	_texture1->Create(L"testTexture0.png");
-
-	//CreateConstantBuffer();
 	_constantBuffer->Create();
 }
 
@@ -80,35 +67,22 @@ void Game::Render()
 
 	// IA - VS - RS - PS - OM
 	{
-		uint32 stride = sizeof(VertexTextureData);
-		uint32 offset = 0;
+		PipelineInfo info;
+		info.inputLayout = _inputLayout;
+		info.vertexShader = _vertexShader;
+		info.pixelShader = _pixelShader;
+		info.rasterizerState = _rasterizerState;
+		info.blendState = _blendState;
+		_pipeline->UpdatePipeline(info);
 
 		auto _deviceContext = _graphics->GetDeviceContext();
+		_pipeline->SetVertexBuffer(_vertexBuffer);
+		_pipeline->SetIndexBuffer(_indexBuffer);
+		_pipeline->SetConstantBuffer(0, SS_VertexShader, _constantBuffer);
+		_pipeline->SetTexture(0, SS_PixelShader, _texture1);
+		_pipeline->SetSamplerState(0, SS_PixelShader, _samplerState);
+		_pipeline->DrawIndexed(_geometry->GetIndexCount(), 0, 0);
 
-		// IA
-		_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer->GetComPtr().GetAddressOf(), &stride, &offset);
-		_deviceContext->IASetIndexBuffer(_indexBuffer->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
-		_deviceContext->IASetInputLayout(_inputLayout->GetComPtr().Get());
-		_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		// VS
-		_deviceContext->VSSetShader(_vertexShader->GetComPtr().Get(), nullptr, 0);
-		_deviceContext->VSSetConstantBuffers(0, 1, _constantBuffer->GetComPtr().GetAddressOf());
-
-		// RS
-		_deviceContext->RSSetState(_rasterizerState->GetComPtr().Get());
-
-		// PS
-		_deviceContext->PSSetShader(_pixelShader->GetComPtr().Get(), nullptr, 0);
-		_deviceContext->PSSetShaderResources(0, 1, _texture1->GetComPtr().GetAddressOf());
-		_deviceContext->PSSetSamplers(0, 1, _samplerState->GetComPtr().GetAddressOf());
-
-		// OM
-		_deviceContext->OMSetBlendState(_blendState->GetComPtr().Get(), _blendState->GetBlendFactor(), _blendState->GetSampleMask());
-
-		_deviceContext->DrawIndexed(_geometry->GetIndexCount(), 0, 0);
-
+		_graphics->RenderEnd();
 	}
-
-	_graphics->RenderEnd();
 }

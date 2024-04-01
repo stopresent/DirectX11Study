@@ -12,33 +12,25 @@ public:
 	void Render();
 
 private:
-	HWND _hwnd;
+	HWND _hwnd = nullptr;
 	
 	shared_ptr<Graphics> _graphics;
+	shared_ptr<Pipeline> _pipeline;
 
 private:
 	// Geometry
 	shared_ptr<Geometry<VertexTextureData>> _geometry;
+	shared_ptr<InputLayout> _inputLayout;
 	shared_ptr<VertexBuffer> _vertexBuffer;
 	shared_ptr<IndexBuffer> _indexBuffer;
-	shared_ptr<InputLayout> _inputLayout;
 
-	// VS
 	shared_ptr<VertexShader> _vertexShader;
-
-	// RAS
 	shared_ptr<RasterizerState> _rasterizerState;
-
-	// PS
 	shared_ptr<PixelShader> _pixelShader;
-
-	// SRV
 	shared_ptr<Texture> _texture1;
-
 	shared_ptr<SamplerState> _samplerState;
 	shared_ptr<BlendState> _blendState;
 
-	// [ CPU <-> RAM ] [ GPU <-> VRAM ]
 private:
 	// SRT
 	TransformData _transformData;
@@ -50,4 +42,3 @@ private:
 	Vec3 _localRotation = { 0.f, 0.f, 0.f };
 	Vec3 _localScale = { 1.f, 1.f, 1.f };
 };
-
